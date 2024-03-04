@@ -30,16 +30,16 @@ export interface User {
   balance: number;
 }
 
-export type Author = {
+export interface Author extends User {
   userSubscribedTo: {
     subscriberId: string;
     authorId: string;
   }[];
-} & User;
+}
 
-export type Subscription = {
+export interface Subscription extends User {
   subscribedToUser: {
     subscriberId: string;
     authorId: string;
   }[];
-} & User;
+}

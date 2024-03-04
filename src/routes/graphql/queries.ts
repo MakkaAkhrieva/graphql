@@ -19,8 +19,7 @@ import {
 } from 'graphql-parse-resolve-info';
 
 export const Query = new GraphQLObjectType({
-  name: 'Query',
-
+  name: 'RootQueryType',
   fields: () => ({
     user: {
       type: UserObjectType,

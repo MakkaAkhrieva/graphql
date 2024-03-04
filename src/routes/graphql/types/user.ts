@@ -6,11 +6,11 @@ import {
   GraphQLNonNull,
 } from 'graphql';
 import { UUIDType } from './uuid.js';
-import { ProfileObjectType } from './profile.js';
-import { PostObjectType } from './post.js';
 import { User } from './interfacesQuery.js';
 import { GraphQLInputObjectType } from 'graphql/index.js';
-import prismaApp from './prisma.js';
+import { ContextInterface } from '../databaseApp.js';
+import { ProfileObjectType } from './profile.js';
+import { PostObjectType } from './post.js';
 
 export const UserObjectType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -21,38 +21,26 @@ export const UserObjectType: GraphQLObjectType = new GraphQLObjectType({
 
     posts: {
       type: new GraphQLList(PostObjectType),
-      resolve: async ({ id }: User) => {
-        return await prismaApp.post.findMany({ where: { authorId: id } });
-      },
+      resolve: async ({ id }: User, _, { loaders }: ContextInterface) =>
+        loaders.postsLoader.load(id),
     },
 
     profile: {
       type: ProfileObjectType,
-      resolve: async ({ id }: User) => {
-        return await prismaApp.profile.findFirst({ where: { userId: id } });
-      },
-    },
-
-    subscribedToUser: {
-      type: new GraphQLList(UserObjectType),
-      resolve: async ({ id }: User) => {
-        const results = await prismaApp.subscribersOnAuthors.findMany({
-          where: { authorId: id },
-          select: { subscriber: true },
-        });
-        return results.map((result) => result.subscriber);
-      },
+      resolve: async ({ id }: User, _, { loaders }: ContextInterface) =>
+        loaders.profileLoader.load(id),
     },
 
     userSubscribedTo: {
       type: new GraphQLList(UserObjectType),
-      resolve: async ({ id }: User) => {
-        const results = await prismaApp.subscribersOnAuthors.findMany({
-          where: { subscriberId: id },
-          select: { author: true },
-        });
-        return results.map((result) => result.author);
-      },
+      resolve: async ({ id }: User, _, { loaders }: ContextInterface) =>
+        loaders.userSubscribedToLoader.load(id),
+    },
+
+    subscribedToUser: {
+      type: new GraphQLList(UserObjectType),
+      resolve: async ({ id }: User, _, { loaders }: ContextInterface) =>
+        loaders.subscribedToUser.load(id),
     },
   }),
 });
@@ -68,6 +56,7 @@ export const CreateUserInputType = new GraphQLInputObjectType({
 export const ChangeUserInputType = new GraphQLInputObjectType({
   name: 'ChangeUserInput',
   fields: () => ({
+    id: { type: UUIDType },
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
   }),

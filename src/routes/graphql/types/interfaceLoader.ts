@@ -12,5 +12,5 @@ export type Loaders = {
   subscribedToUser: DataLoader<string, Subscription[]>;
   postsLoader: DataLoader<string, Post[]>;
   profileLoader: DataLoader<string, Profile>;
-  memeberTypeLoader: DataLoader<string, Member>;
+  memberTypeLoader: DataLoader<string, Member>;
 };

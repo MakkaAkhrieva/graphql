@@ -28,8 +28,7 @@ import {
 } from './types/interfacesMutation.js';
 
 export const Mutations = new GraphQLObjectType({
-  name: 'Mutation',
-
+  name: 'RootMutationType',
   fields: () => ({
     createUser: {
       type: UserObjectType,
