@@ -1,3 +1,6 @@
+import { User } from '@prisma/client';
+import { Args } from './interfaceLoader.js';
+
 export interface CreatePost {
   dto: {
     authorId: string;
@@ -39,16 +42,7 @@ export interface UserSubscribedTo {
 }
 
 export interface CreateUser {
-  dto: {
-    name: string;
-    balance: number;
-  };
+  dto: Omit<User, 'id'>;
 }
 
-export interface ChangeUser {
-  id: string;
-  dto: {
-    name: string;
-    balance: number;
-  };
-}
+export type ChangeUser = CreateUser & Args;
