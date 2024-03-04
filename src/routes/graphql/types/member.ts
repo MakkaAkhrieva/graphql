@@ -1,13 +1,5 @@
-import {
-  GraphQLEnumType,
-  GraphQLFloat,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLObjectType,
-} from 'graphql';
-import { ProfileObjectType } from './profile.js';
-import { Member, MemberEnumType } from './interfacesQuery.js';
-import prismaApp from './prisma.js';
+import { GraphQLEnumType, GraphQLFloat, GraphQLInt, GraphQLObjectType } from 'graphql';
+import { MemberEnumType } from './interfacesQuery.js';
 
 export const MemberTypeId = new GraphQLEnumType({
   name: 'MemberTypeId',
@@ -17,17 +9,11 @@ export const MemberTypeId = new GraphQLEnumType({
   },
 });
 
-export const MemberObjectType: GraphQLObjectType = new GraphQLObjectType({
-  name: 'MemberObjectType',
+export const MemberObjectType = new GraphQLObjectType({
+  name: 'MemberType',
   fields: () => ({
     id: { type: MemberTypeId },
     discount: { type: GraphQLFloat },
     postsLimitPerMonth: { type: GraphQLInt },
-    profiles: {
-      type: new GraphQLList(ProfileObjectType),
-      resolve: async ({ id }: Member) => {
-        return await prismaApp.profile.findMany({ where: { memberTypeId: id } });
-      },
-    },
   }),
 });
