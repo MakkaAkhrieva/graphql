@@ -29,3 +29,17 @@ export interface User {
   name: string;
   balance: number;
 }
+
+export type Author = {
+  userSubscribedTo: {
+    subscriberId: string;
+    authorId: string;
+  }[];
+} & User;
+
+export type Subscription = {
+  subscribedToUser: {
+    subscriberId: string;
+    authorId: string;
+  }[];
+} & User;
